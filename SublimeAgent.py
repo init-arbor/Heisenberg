@@ -91,6 +91,7 @@ class WindowManger:
             info("confirm_initiated ")
             self.win.run_command("init_heisenberg")
 
+
 class InitHeisenbergCommand(sublime_plugin.WindowCommand):
 
     def __init__(self, win):
@@ -107,9 +108,6 @@ class InitHeisenbergCommand(sublime_plugin.WindowCommand):
         info("Initiated: {}".format(os.path.basename(self.project_name)))
         #info("path_cscope_lib {}".format(self.path_cscope_lib))
  
-
-
-
     def _load_initial_files(self):
         idx = 0
         for f in self.init_files:
@@ -135,6 +133,7 @@ class InitHeisenbergCommand(sublime_plugin.WindowCommand):
         if active_view:
             self.win.focus_view(active_view)
 
+
 class Validator:
     @staticmethod 
     def _invalid_word(view, word):
@@ -156,6 +155,7 @@ class Validator:
         if Validator._invalid_word(view, word):
             return False, None
         return True, word
+
 
 class LookupWordCommand(sublime_plugin.TextCommand):
     def __init__(self, view):
@@ -196,14 +196,13 @@ class LookupWordCommand(sublime_plugin.TextCommand):
 
         
         #read dfn file and scroll to that line
-        self.view.run_command("load_def_win", {
-                "dfn_path": dfn_path,
+        self.view.run_command("load_win", {
+                "filepath": dfn_path,
                 "line_num": line_num,
                 "word": word,
                 "mode":"load_def"}
                 )
 
- 
 
 class LoadWinCommand(sublime_plugin.TextCommand):
 
@@ -249,8 +248,6 @@ class LoadWinCommand(sublime_plugin.TextCommand):
             win.set_view_index(view, 0, 0)
             self.win_manager.Highlight(line_num, word, view)
  
- 
-
     def _get_filepath_line_no_word(self):
         #based on user cursor position in main console, 
         #we get dfn path and line_no
@@ -286,10 +283,6 @@ class LoadWinCommand(sublime_plugin.TextCommand):
 
         return line
 
-class LoadSrcWinCommand(sublime_plugin.TextCommand):
-    def __init__(self, view):
-        self.view = view
-
 
 class InputLookupCommand(sublime_plugin.WindowCommand):
 
@@ -305,9 +298,9 @@ class InputLookupCommand(sublime_plugin.WindowCommand):
         self.win.show_input_panel(
             "Search Symbol", initial, self.on_done, None, None)
 
-    def on_done(self, word):
- 
+    def on_done(self, word): 
         self.win.active_view().run_command("lookup_word", {"mode":"def_and_sym", "word": word})
+
 
 class SaveCahcheToDiskCommand(sublime_plugin.WindowCommand):
     def __init__(self, win):
@@ -333,7 +326,6 @@ class DisplayTextCommand(sublime_plugin.TextCommand):
             view.show_at_center(view.text_point(int(line_num) - 1, 0))
 
  
-
 #[non public]  
 class ScrollHighlightCommand(sublime_plugin.TextCommand):
     MAX_RETRY = 5
