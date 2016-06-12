@@ -1,9 +1,10 @@
 [
-        { "keys": ["super+2"], "command": "lookup_word", "args": {"mode": "def_only"}  },
-        { "keys": ["super+3"], "command": "lookup_word", "args": {"mode": "def_and_sym"}  },
+        { "keys": ["shift+super+1"], "command": "lookup_word", "args": {"mode": "def_only"}  },
+        { "keys": ["super+1"], "command": "lookup_word", "args": {"mode": "def_and_sym"}  },
+        { "keys": ["super+2"], "command": "load_win", "args": {"mode": "load_def"} },
+        { "keys": ["super+3"], "command": "load_win", "args": {"mode": "load_src"} },
         { "keys": ["super+4"], "command": "input_lookup" },
-        { "keys": ["super+5"], "command": "load_win", "args": {"mode": "load_def"} },
-        { "keys": ["super+6"], "command": "load_win", "args": {"mode": "load_src"} },
+        { "keys": ["super+7"], "command": "list_history" },
         { "keys": ["super+8"], "command": "init_heisenberg" },
         { "keys": ["super+9"], "command": "save_cahche_to_disk" },
 ]

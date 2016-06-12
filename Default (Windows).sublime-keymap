@@ -1,0 +1,10 @@
+[
+        { "keys": ["shift+f1"], "command": "lookup_word", "args": {"mode": "def_only"}  },
+        { "keys": ["f1"], "command": "lookup_word", "args": {"mode": "def_and_sym"}  },
+        { "keys": ["f2"], "command": "load_win", "args": {"mode": "load_def"} },
+        { "keys": ["f3"], "command": "load_win", "args": {"mode": "load_src"} },
+        { "keys": ["f4"], "command": "input_lookup" },
+        { "keys": ["f7"], "command": "list_history" },
+        { "keys": ["f8"], "command": "init_heisenberg" },
+        { "keys": ["f9"], "command": "save_cahche_to_disk" },
+]

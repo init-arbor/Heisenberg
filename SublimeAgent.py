@@ -38,7 +38,7 @@ class WindowManger:
         })
  
         self.win.set_layout({
-            "cols": [0.0, 0.75, 1.0],
+            "cols": [0.0, 0.5, 1.0],
             "rows": [0.0, 0.5, 1.0],
             "cells":
             [[0, 0, 1, 2], [1, 0, 2, 1], [1, 1, 2, 2]]
@@ -86,9 +86,9 @@ class WindowManger:
         else:
             self._createView(idx, 0, name, syntax)
  
-    def confirm_initiated(self):
+    def make_sure_initiated(self):
         if not ProjectCentral.Exist(self.project_name):
-            info("confirm_initiated ")
+            info("make_sure_initiated ")
             self.win.run_command("init_heisenberg")
 
 
@@ -163,18 +163,22 @@ class LookupWordCommand(sublime_plugin.TextCommand):
         self.project_name = view.window().project_file_name()
         self.win_manager = None
         self.formatter = CscopeOutputFormatter()
-        self.proj_central =None
+        self.proj_central = None
+        self.processing_word = ""
     def run(self, edit, mode=None, word=None):
 
         if not self.win_manager:
             self.win_manager = WindowManger(self.view.window())
-            self.win_manager.confirm_initiated()
+            self.win_manager.make_sure_initiated()
             self.proj_central = ProjectCentral.Get(self.project_name)
         if not word:
             valid, word = Validator.WantedLookup(self.view)
             if not valid:
                 return
-        info(word)
+        if word ==self.processing_word:
+            return
+        self.processing_word = word
+
         #lookup mode selection
 
         if mode =="def_only":
@@ -217,12 +221,11 @@ class LoadWinCommand(sublime_plugin.TextCommand):
     def run(self, edit, mode, filepath=None, line_num=None, word=None):
         if not self.win_manager:
             self.win_manager = WindowManger(self.view.window())
-            self.win_manager.confirm_initiated()
+            self.win_manager.make_sure_initiated()
         if not filepath:
             #triggerred by User presses Fn in Main console
             #we have to find dfn_path and line_num
-            if self.view.name() !=WindowManger.MainWin:
-                self.win_manager.PrintDef("No definition found")
+            if len(self.view.name())>0 and self.view.name() !=WindowManger.MainWin:
                 return 
             [filepath, line_num, word] = self._get_filepath_line_no_word()
 
@@ -264,6 +267,11 @@ class LoadWinCommand(sublime_plugin.TextCommand):
 
         while row >= 1:
             pre_line = self._get_line(view, row)
+            if len(pre_line)>1 and ":" in pre_line:
+                f = pre_line[:len(pre_line)-2]
+                if os.path.isfile(f):
+                    filename = f
+                    break 
             result = self.filename_pattern.match(pre_line)
             if result:
                 filename = result.group(1)
@@ -290,7 +298,7 @@ class InputLookupCommand(sublime_plugin.WindowCommand):
         self.win = win
 
     def run(self):
-        CLIPBOARD_SIZE = 16
+        CLIPBOARD_SIZE = 32
         clipboard = sublime.get_clipboard(CLIPBOARD_SIZE).strip()
  
         initial = clipboard if len(clipboard) < CLIPBOARD_SIZE else ""
@@ -347,7 +355,7 @@ class ScrollHighlightCommand(sublime_plugin.TextCommand):
         #wkr: temp wait when file completes loading
         if view.text_point(line_num - 1, 0) == 0 and \
             self.wait_count < ScrollHighlightCommand.MAX_RETRY:
-            sublime.set_timeout(self.callback, 200)
+            sublime.set_timeout(self.callback, 550)
             self.wait_count += 1
             return
 
@@ -379,3 +387,28 @@ class ScrollHighlightCommand(sublime_plugin.TextCommand):
         self.key = key
 
         self.callback()
+
+class ListHistoryCommand(sublime_plugin.WindowCommand):
+    def __init__(self, win):
+        self.win = win
+        self.histroy = []
+        self.win_manager = None
+
+    def run(self):
+        if not self.win_manager:
+            self.win_manager = WindowManger(self.win)
+            self.win_manager.make_sure_initiated()
+        self.history = ProjectCentral.Get(self.win.project_file_name()).History()
+
+        if len(self.history)>0:
+            self.history.reverse()
+            self.win.show_quick_panel(
+                self.history, self.on_done, sublime.MONOSPACE_FONT
+                )
+        else:
+            self.win.show_quick_panel(["Empty history"], self.on_done)
+    def on_done(self, idx):
+        if idx >=0:
+            self.win.active_view().run_command("lookup_word", 
+                {"mode":"def_and_sym", "word": self.history[idx]})
+

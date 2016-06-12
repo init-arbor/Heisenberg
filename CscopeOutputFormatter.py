@@ -1,5 +1,9 @@
 
- 
+try:
+    from LogAgent import info
+except:
+    from Heisenberg.LogAgent import info
+import os
 from collections import namedtuple
 line_result = namedtuple("line_result", ["file",  "line_num", "scope", "code"])
 
@@ -70,7 +74,8 @@ class CscopeOutputFormatter:
                     " {0:>5} [{1}] {2}\n".format(d.line_num, d.scope, d.code))
             else:
                 result.append(
-                    "\n{0}:\n {1:>5} [{2}]  {3}\n".format(d.file, d.line_num, d.scope, d.code))
+                    "\n{}:\n{}\n {:>5} [{}]  {}\n".format(
+                        d.file, os.path.basename(d.file), d.line_num, d.scope, d.code))
             pre_d = d
         return ''.join(result)
 

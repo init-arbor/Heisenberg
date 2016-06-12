@@ -7,7 +7,7 @@ try:
     from LogAgent import log_init
 except:
     from Heisenberg.CscopeAgent import CscopeAgent
-    from  Heisenberg.LogAgent import log_init
+    from Heisenberg.LogAgent import log_init
  
 
 
@@ -18,21 +18,21 @@ class CacheAgent:
  
         self.dual_mode_bufer={}
         self.def_bufer={}
-
+        self.history =[]
         self.path_buffer = path_buffer
         self.cscopeAgent = CscopeAgent(path_cscope_lib)
 
-        if os.path.isfile(self.path_buffer):
-            self._read_from_disk()
-        else:
-            self.SaveToDisk()
+        # if os.path.isfile(self.path_buffer):
+        #     self._read_from_disk()
+        # else:
+        #     self.SaveToDisk()
 
     def FindBoth(self, key):
         if key not in self.dual_mode_bufer:
             [dfn, symref]= self.cscopeAgent.FindBoth(key)
             self.dual_mode_bufer[key]=[dfn, symref]
 
-
+        self._add_history(key)
         return self.dual_mode_bufer[key]
 
     def FindDef(self, key):
@@ -40,7 +40,7 @@ class CacheAgent:
         if key not in self.def_bufer:
             dfn = self.cscopeAgent.FindDef(key)
             self.def_bufer[key] = dfn
-            
+        self._add_history(key)     
         return self.def_bufer[key]
 
     def Reset(self):
@@ -57,6 +57,14 @@ class CacheAgent:
 
     def _dump(self):
         log.info(str(self.dual_mode_bufer))
+
+    def _add_history(self, key):
+        if key in self.history:
+            self.history.remove(key)
+        self.history.append(key)
+        
+    def History(self):
+        return self.history
 
 class TestCacheAgent(unittest.TestCase):
     def setUp(self):

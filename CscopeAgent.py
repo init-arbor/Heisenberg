@@ -18,8 +18,8 @@ class CscopeAgent:
     def __init__(self, path_cscope_lib):
         self.path_cscope_lib = path_cscope_lib
 
-        if platform.system() == "windows":
-            self.path_cscope_exe = "/Users/init/Documents/cscope"
+        if platform.system() == "Windows":
+            self.path_cscope_exe = "cscope"
         else:
             self.path_cscope_exe = "/Users/init/Documents/cscope"
 
@@ -59,7 +59,7 @@ class CscopeAgent:
             "cwd": cwd,
         }
 
-        if platform.system() == "windows":
+        if platform.system() == "Windows":
             popen_arg_list["creationflags"] = 0x08000000
 
         proc = subprocess.Popen(args, **popen_arg_list)

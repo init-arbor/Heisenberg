@@ -23,7 +23,8 @@ class ProjectCentral:
     def AddProject(project_name, path_cscope_lib):
         if project_name in ProjectCentral.cacheAgents:
             del ProjectCentral.cacheAgents[project_name]
-        ProjectCentral.cacheAgents[project_name] = CacheAgent(path_cscope_lib, project_name)
+        path_buf = project_name.replace("sublime-project",".buf.txt")
+        ProjectCentral.cacheAgents[project_name] = CacheAgent(path_cscope_lib, path_buf)
  
     @staticmethod
     def Get(project_name):
