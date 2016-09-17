@@ -16,14 +16,14 @@ ProjectCentral
     # view -> project_data-> cscope_out location
     static:
         {project_name: CachAgent}
-     
+
 
 CachAgent(path_cscope_lib, project_name)
     FindDef
     FindBoth
 
 
-CscopeAgent(path_cscope_lib) 
+CscopeAgent(path_cscope_lib)
     FindDef
     FindBoth
 

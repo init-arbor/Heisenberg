@@ -27,13 +27,13 @@ class CscopeAgent:
        args = self._build_cmd_arg(CscopeAgent.SymRef, key)
        cwd = os.path.dirname(self.path_cscope_lib)
        return self._cmd(args, cwd)
-        
+
 
     def FindDef(self, key):
        args = self._build_cmd_arg(CscopeAgent.Def, key)
        cwd = os.path.dirname(self.path_cscope_lib)
        return self._cmd(args, cwd)
-     
+
 
     def FindBoth(self,key):
         #in this mode, we find both symRef and Def
@@ -43,8 +43,8 @@ class CscopeAgent:
         symRef = self._findSymRef(key)
         #def_lines = dfn.split('\n')
 
-        #We regard the first entry as "real" def 
-        #for simplicity.  
+        #We regard the first entry as "real" def
+        #for simplicity.
         #if len(def_lines) >=1:
         #    symRef=symRef.replace(def_lines[0],"")
 
